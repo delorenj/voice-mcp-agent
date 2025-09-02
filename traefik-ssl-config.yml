@@ -1,0 +1,47 @@
+# 🚀 TRAEFIK SSL CONFIGURATION FOR CLOUDFLARE DNS CHALLENGE
+# This is the CORRECT configuration for Let's Encrypt certificates with Cloudflare
+
+# Add this to your Traefik compose service environment section:
+environment:
+  # Cloudflare DNS Challenge (PROPER TOKEN FORMAT)
+  - CLOUDFLARE_EMAIL=delorenj@delo.sh
+  - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}  # NEW TOKEN FORMAT!
+  
+  # OR if using Global API Key (deprecated but sometimes needed)
+  - CF_API_EMAIL=delorenj@delo.sh
+  - CF_API_KEY=${CLOUDFLARE_API_TOKEN}
+
+# Add this to your Traefik compose service volumes:
+volumes:
+  - ./traefik-data/acme.json:/acme.json:rw
+
+# Add this to your Traefik service command or static config:
+command:
+  - --api.dashboard=true
+  - --providers.docker=true
+  - --providers.docker.exposedbydefault=false
+  - --entrypoints.web.address=:80
+  - --entrypoints.websecure.address=:443
+  - --certificatesresolvers.letsencrypt.acme.tlschallenge=false
+  - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+  - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+  - --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+  - --certificatesresolvers.letsencrypt.acme.dnschallenge.delayBeforeCheck=60
+  - --certificatesresolvers.letsencrypt.acme.email=delorenj@delo.sh
+  - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+  - --certificatesresolvers.letsencrypt.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+  
+# HTTP to HTTPS redirect
+  - --entrypoints.web.http.redirections.entrypoint.to=websecure
+  - --entrypoints.web.http.redirections.entrypoint.scheme=https
+  - --entrypoints.web.http.redirections.entrypoint.permanent=true
+
+# Example service labels for your applications:
+labels:
+  - "traefik.enable=true"
+  - "traefik.docker.network=proxy"
+  - "traefik.http.routers.myapp.rule=Host(`myapp.delo.sh`)"
+  - "traefik.http.routers.myapp.entrypoints=websecure"
+  - "traefik.http.routers.myapp.tls=true"
+  - "traefik.http.routers.myapp.tls.certresolver=letsencrypt"  # This triggers certificate generation!
+  - "traefik.http.services.myapp.loadbalancer.server.port=8080"

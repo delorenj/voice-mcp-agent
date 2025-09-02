@@ -1,0 +1,110 @@
+
+ Checking installation status…
+[?2004h[2K[1A[2K[1A[2K[G
+ Diagnostics
+ └ Currently running: unknown (1.0.100)
+ └ Path: /home/delorenj/.local/share/mise/installs/node/24.3.0/bin/node
+ └ Invoked: /home/delorenj/.local/share/mise/installs/node/24.3.0/bin/claude
+ └ Config install method: unknown
+ └ Auto-updates enabled: true
+ └ Search: OK (vendor)
+
+ Invalid Settings
+ /home/delorenj/code/mcp/voice-mcp-agent/.claude/settings.json
+  └ permissions
+    ├ allow
+    │ ├ "Bash(npx claude-flow *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(npx claude-flow :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(git config *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git config :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(git tag *)": Use ":*" for prefix matching, not just "*". Change
+  to "Bash(git tag :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(git branch *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git branch :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(git checkout *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git checkout :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(git stash *)": Use ":*" for prefix matching, not just "*". Change
+   to "Bash(git stash :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(git reset *)": Use ":*" for prefix matching, not just "*". Change
+   to "Bash(git reset :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(git rev-parse *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git rev-parse :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(git ls-files *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git ls-files :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    │ ├ "Bash(gh *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(gh :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(node *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(node :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(which *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(which :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(ls *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(ls :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(jq *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(jq :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(test *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(test :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(find *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(find :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(grep *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(grep :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(sed *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(sed :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(awk *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(awk :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(curl *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(curl :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(npm test *)": Use ":*" for prefix matching, not just "*". Change
+  to "Bash(npm test :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(mkdir *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(mkdir :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(cd *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(cd :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(cat *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(cat :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(echo *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(echo :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(npx claude-flow@alpha *)": Use ":*" for prefix matching, not just
+   "*". Change to "Bash(npx claude-flow@alpha :*)" for prefix matching.
+  Examples: Bash(npm run:*), Bash(git:*)
+    │ ├ "Bash(git diff *)": Use ":*" for prefix matching, not just "*". Change
+  to "Bash(git diff :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(git log *)": Use ":*" for prefix matching, not just "*". Change
+  to "Bash(git log :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ ├ "Bash(git add *)": Use ":*" for prefix matching, not just "*". Change
+  to "Bash(git add :*)" for prefix matching. Examples: Bash(npm run:*),
+  Bash(git:*)
+    │ └ "Bash(git commit *)": Use ":*" for prefix matching, not just "*".
+  Change to "Bash(git commit :*)" for prefix matching. Examples: Bash(npm
+  run:*), Bash(git:*)
+    └ deny
+      ├ "Bash(curl * | bash)": Wildcards in the middle of commands are not
+  supported. Use prefix matching with ":*" or specify exact commands. Examples:
+   Bash(npm run:*) - allows any npm run command, Bash(npm install express) -
+  allows exact command, Bash - allows all commands
+      ├ "Bash(wget * | sh)": Wildcards in the middle of commands are not
+  supported. Use prefix matching with ":*" or specify exact commands. Examples:
+   Bash(npm run:*) - allows any npm run command, Bash(npm install express) -
+  allows exact command, Bash - allows all commands
+      └ "Bash(eval *)": Use ":*" for prefix matching, not just "*". Change to
+  "Bash(eval :*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+
+
+ Context Usage Warnings
+ └ ⚠ Large CLAUDE.md file detected (45,383 chars > 40,000)
+   └ Files:
+     └ /home/delorenj/code/CLAUDE.md: 45,383 chars
+
+ Press Enter to continue…
+[?2004l

@@ -3,13 +3,12 @@
 # To install Node.js/npx (required for running sample MCP servers):
 #   make nodejs-macos   # for macOS (Homebrew)
 
-.PHONY: help run test install uv venv certs-macos certs-linux nodejs-macos run-mcp-server
+.PHONY: help run test install venv certs-macos certs-linux nodejs-macos run-mcp-server
 
 help:
 	@echo "Available targets:"
-	@echo "  uv           - Install uv (Python package manager) for macOS/Linux"
-	@echo "  venv         - Create a Python virtual environment in ./venv"
-	@echo "  install      - Install Python dependencies using uv (in venv if activated)"
+	@echo "  venv         - Create a Python virtual environment using uv"
+	@echo "  install      - Install Python dependencies using uv"
 	@echo "  run          - Run the LiveKit agent (requires OPENAI_API_KEY and ELEVENLABS_API_KEY env vars)"
 	@echo "  test         - Run all tests with pytest (requires env vars if needed)"
 	@echo "  certs-macos  - Fix SSL certificate issues on macOS (run Install Certificates.command)"
@@ -17,17 +16,15 @@ help:
 	@echo "  nodejs-macos  - Install Node.js/npx for macOS (Homebrew)"
 	@echo "  run-mcp-server - Run a sample MCP server (requires npx)"
 
-uv:
-	@echo "Installing uv..."
-	@curl -Ls https://astral.sh/uv/install.sh | sh
-
 venv:
-	python3 -m venv venv
-	@echo "Virtual environment created in ./venv"
-	@echo "To activate, run: source venv/bin/activate"
+	uv venv
+	@echo "Virtual environment created using uv"
+	@echo "To activate, run: source .venv/bin/activate"
 
 install:
 	uv pip install -r requirements.txt
+	@echo "Verifying installation..."
+	@python3 check_deps.py
 
 # Troubleshooting: SSL certificate errors (CERTIFICATE_VERIFY_FAILED)
 certs-macos:
@@ -38,7 +35,8 @@ certs-linux:
 	sudo apt-get update && sudo apt-get install -y ca-certificates
 
 run:
-	python main.py console
+	@if [ ! -d ".venv" ]; then echo "Virtual environment not found. Run 'make venv' first."; exit 1; fi
+	.venv/bin/python main.py console
 
 test:
 	@# SSL certificate check for macOS

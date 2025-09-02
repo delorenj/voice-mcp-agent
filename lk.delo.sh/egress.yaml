@@ -1,0 +1,15 @@
+redis:
+    address: <redis-host>:6379
+    username: ""
+    password: ""
+    db: 0
+    use_tls: false
+    sentinel_master_name: ""
+    sentinel_username: ""
+    sentinel_password: ""
+    sentinel_addresses: []
+    cluster_addresses: []
+    max_redirects: null
+api_key: APIcQP8xHwvsq7d
+api_secret: RJ3CeZtWyb6d3cQPDfLfDxOjVmzxJKh6pb0i3bIyeI3B
+ws_url: wss://lk.delo.sh

@@ -1,0 +1,154 @@
+# 🚀 ULTIMATE TRAEFIK CLOUDFLARE DNS CHALLENGE CONFIGURATION
+# Version: "The Bulletproof Edition" 
+# This configuration is so reliable, it makes bank vaults jealous
+#
+# Add this to your existing compose.yml or use as a complete Traefik service
+
+version: '3.8'  # Using explicit version for maximum compatibility
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik-proxy
+    restart: unless-stopped
+    
+    # Command configuration - because static configs are for the weak
+    command:
+      # API and Dashboard
+      - --api.dashboard=true
+      - --api.debug=true
+      
+      # Docker provider
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+      
+      # Entrypoints
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      
+      # HTTP to HTTPS redirect (because we're civilized)
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      
+      # Certificate resolvers - THE CRITICAL PART
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=false
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=false
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.delayBeforeCheck=60
+      - --certificatesresolvers.letsencrypt.acme.email=delorenj@delo.sh
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme.json
+      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      
+      # Logging (because debugging is life)
+      - --log.level=INFO
+      - --accesslog=true
+      - --accesslog.filepath=/var/log/traefik/access.log
+      - --log.filepath=/var/log/traefik/traefik.log
+      
+      # Metrics (because data is beautiful)
+      - --metrics.prometheus=true
+      - --metrics.prometheus.addentrypointslabels=true
+      - --metrics.prometheus.addserviceslabels=true
+    
+    # Environment variables - THE MAGIC SAUCE
+    environment:
+      # NEW API TOKEN FORMAT (the proper way)
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-delorenj@delo.sh}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      
+      # Legacy format support (just in case)
+      - CF_API_EMAIL=${CLOUDFLARE_EMAIL:-delorenj@delo.sh}
+      - CF_API_KEY=${CLOUDFLARE_API_TOKEN}
+      
+      # Additional Cloudflare options for maximum compatibility
+      - CLOUDFLARE_PROPAGATION_TIMEOUT=300
+      - CLOUDFLARE_POLLING_INTERVAL=60
+      - CLOUDFLARE_TTL=120
+    
+    # Ports
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Dashboard (remove in production or secure it)
+    
+    # Volumes
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik-data/acme.json:/acme.json:rw
+      - ./traefik-data/logs:/var/log/traefik:rw
+      - ./traefik-data/config:/etc/traefik/dynamic:ro  # For dynamic configs
+    
+    # Networks
+    networks:
+      - proxy
+    
+    # Labels for the dashboard
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      
+      # Dashboard
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.delo.sh`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      
+      # Optional: Basic auth for dashboard (uncomment and set credentials)
+      # - "traefik.http.routers.traefik-dashboard.middlewares=auth"
+      # - "traefik.http.middlewares.auth.basicauth.users=admin:$$2y$$10$$..."
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# Example service using the Traefik proxy
+  whoami:
+    image: traefik/whoami
+    container_name: whoami-test
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.delo.sh`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=letsencrypt"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
+
+# 🔧 SETUP INSTRUCTIONS:
+#
+# 1. Run the cloudflare-api-emergency-fix.sh script first!
+# 2. Create the proxy network: docker network create proxy
+# 3. Create traefik-data directory: mkdir -p traefik-data/logs
+# 4. Create acme.json: touch traefik-data/acme.json && chmod 600 traefik-data/acme.json
+# 5. Start Traefik: docker compose up -d traefik
+# 6. Monitor logs: docker logs -f traefik
+#
+# 🚨 TROUBLESHOOTING:
+#
+# - If certificates fail: Check docker logs traefik | grep -i cloudflare
+# - If API fails: Run the test script: ./cloudflare-api-emergency-fix.sh
+# - If DNS challenge times out: Increase CLOUDFLARE_PROPAGATION_TIMEOUT
+# - If rate limited: Wait 1 hour and restart Traefik
+#
+# 🎯 MONITORING:
+#
+# - Dashboard: https://traefik.delo.sh
+# - Logs: docker logs -f traefik
+# - Test cert: curl -I https://whoami.delo.sh
+# - ACME status: docker exec traefik cat /acme.json | jq '.'

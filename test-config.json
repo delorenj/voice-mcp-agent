@@ -1,0 +1,91 @@
+{
+  "test_environment": "development",
+  "parallel": false,
+  "test_timeout": 300,
+  "run_performance_tests": false,
+  "verbose": true,
+  
+  "services": {
+    "livekit": {
+      "host": "localhost",
+      "port": 7880,
+      "api_key": "APIcQP8xHwvsq7d",
+      "api_secret": "RJ3CeZtWyb6d3cQPDfLfDxOjVmzxJKh6pb0i3bIyeI3B",
+      "health_endpoint": "/health"
+    },
+    "redis": {
+      "host": "localhost", 
+      "port": 6379,
+      "username": "",
+      "password": "",
+      "db": 0
+    },
+    "caddy": {
+      "host": "lk.delo.sh",
+      "port": 443,
+      "domains": ["lk.delo.sh", "lk-turn.delo.sh", "lk-whip.delo.sh"]
+    },
+    "ingress": {
+      "rtmp_port": 1935,
+      "whip_port": 8080,
+      "http_relay_port": 9090
+    }
+  },
+  
+  "test_categories": {
+    "unit": {
+      "enabled": true,
+      "timeout": 60,
+      "critical": true
+    },
+    "integration": {
+      "enabled": true,
+      "timeout": 180,
+      "critical": true,
+      "skip_ssl_tests": true
+    },
+    "system": {
+      "enabled": true,
+      "timeout": 300,
+      "critical": false
+    },
+    "performance": {
+      "enabled": false,
+      "timeout": 600,
+      "critical": false,
+      "concurrent_users": [10, 25, 50],
+      "duration_seconds": 60
+    }
+  },
+  
+  "ssl_testing": {
+    "enabled": false,
+    "domains": ["lk.delo.sh", "lk-turn.delo.sh", "lk-whip.delo.sh"],
+    "test_mode": true,
+    "skip_certificate_validation": true
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "metrics_interval": 5,
+    "alert_thresholds": {
+      "cpu_percent": 80,
+      "memory_percent": 90,
+      "disk_usage_percent": 95,
+      "response_time_ms": 1000
+    }
+  },
+  
+  "reporting": {
+    "generate_html": true,
+    "generate_json": true,
+    "generate_junit": false,
+    "coverage_threshold": 80
+  },
+  
+  "cleanup": {
+    "auto_cleanup": true,
+    "keep_logs": true,
+    "cleanup_timeout": 30
+  }
+}

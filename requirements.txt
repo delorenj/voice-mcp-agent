@@ -5,3 +5,8 @@ livekit-plugins-elevenlabs~=1.0
 mcp==1.7.1
 pytest
 PyYAML
+requests>=2.25.0
+httpx>=0.24.0
+# Alternative STT options for self-hosted setup
+faster-whisper>=1.0.0
+openai-whisper>=20231117

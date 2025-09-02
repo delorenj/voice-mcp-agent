@@ -9,6 +9,7 @@ import logging
 from livekit.agents.voice import Agent
 from livekit.agents.llm import ChatChunk
 from livekit.plugins import openai, silero, elevenlabs
+from custom_whisper_stt import CustomWhisperSTT
 
 class FunctionAgent(Agent):
     """
@@ -37,9 +38,22 @@ class FunctionAgent(Agent):
             )
         else:
             llm = openai.LLM(model=llm_model, timeout=60)
+        # Configure STT - use custom Whisper for self-hosted STT
+        stt_backend = os.environ.get("AGENT_STT_BACKEND", "whisper")  # "whisper" or "openai"
+        
+        if stt_backend == "whisper":
+            stt_engine = CustomWhisperSTT(
+                model_size=os.environ.get("WHISPER_MODEL", "base"),  # base, small, medium, large
+                language="en",
+                device="cpu",  # Change to "cuda" if GPU available
+                compute_type="int8"  # int8 for CPU, float16 for GPU
+            )
+        else:
+            stt_engine = openai.STT()
+            
         super().__init__(
             instructions=instructions,
-            stt=openai.STT(),
+            stt=stt_engine,
             llm=llm,
             tts=elevenlabs.TTS(),
             vad=silero.VAD.load(),

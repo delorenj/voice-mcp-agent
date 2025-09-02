@@ -7,6 +7,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+class AuthenticationError(Exception):
+    """Authentication error for MCP operations."""
+    pass
+
 class HMACAuth:
     """HMAC authentication for MCP client requests."""
 
