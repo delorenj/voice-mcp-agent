@@ -1,0 +1,29 @@
+# Dockerfile for Mac Bridge WebSocket Server
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy bridge application files
+COPY agent_bridge.py .
+COPY websocket_server.py .
+COPY custom_whisper_stt.py .
+
+# Expose WebSocket port
+EXPOSE 8765
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD python3 -c "import asyncio; import websockets; asyncio.get_event_loop().run_until_complete(websockets.connect('ws://localhost:8765/bridge').close())"
+
+# Run the WebSocket server
+CMD ["python3", "websocket_server.py", "--host", "0.0.0.0", "--port", "8765"]
