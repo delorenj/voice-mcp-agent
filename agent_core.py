@@ -38,6 +38,7 @@ class FunctionAgent(Agent):
                 instructions = f.read()
         else:
             instructions = os.environ.get("AGENT_SYSTEM_PROMPT", "You are a helpful assistant communicating through voice. Use the available MCP tools to answer questions.")
+        
         # Make LLM model and backend configurable via env var
         llm_model = os.environ.get("AGENT_LLM_MODEL", "gpt-4.1-mini")
         llm_backend = os.environ.get("AGENT_LLM_BACKEND", "openai")  # 'openai' or 'ollama'
@@ -48,6 +49,7 @@ class FunctionAgent(Agent):
             )
         else:
             llm = openai.LLM(model=llm_model, timeout=60)
+        
         # Configure STT - use custom Whisper for self-hosted STT
         stt_backend = os.environ.get("AGENT_STT_BACKEND", "whisper")  # "whisper" or "openai"
         
@@ -69,6 +71,15 @@ class FunctionAgent(Agent):
             vad=silero.VAD.load(),
             allow_interruptions=True
         )
+        
+        # Bridge integration settings
+        self.bridge_enabled = BRIDGE_AVAILABLE and os.environ.get("BRIDGE_ENABLED", "true").lower() == "true"
+        self.last_transcription = None
+        
+        if self.bridge_enabled:
+            logging.info("Mac Bridge integration enabled")
+        else:
+            logging.info("Mac Bridge integration disabled")
 
     async def llm_node(self, chat_ctx, tools, model_settings):
         """Override the llm_node to say a message when a tool call is detected."""
