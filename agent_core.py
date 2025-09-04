@@ -6,10 +6,20 @@ Defines the FunctionAgent class, a LiveKit agent that uses MCP tools from one or
 
 import os
 import logging
+import asyncio
 from livekit.agents.voice import Agent
 from livekit.agents.llm import ChatChunk
 from livekit.plugins import openai, silero, elevenlabs
 from custom_whisper_stt import CustomWhisperSTT
+from typing import Optional, Dict, Any
+
+# Import bridge components - handle case where they're not available
+try:
+    from agent_bridge import handle_voice_result, get_client_count
+    BRIDGE_AVAILABLE = True
+except ImportError:
+    BRIDGE_AVAILABLE = False
+    logging.warning("Bridge components not available - bridge functionality disabled")
 
 class FunctionAgent(Agent):
     """
