@@ -133,6 +133,37 @@ services:
       - TURN_REALM=lk-turn.delo.sh
       - TURN_SECRET=${TURN_SECRET:-livekit-turn-secret-production-2024}
 
+  # Mac Bridge WebSocket Server
+  mac-bridge:
+    build: 
+      context: .
+      dockerfile: Dockerfile.bridge
+    container_name: livekit-mac-bridge
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - BRIDGE_ENABLED=true
+      - BRIDGE_HOST=0.0.0.0
+      - BRIDGE_PORT=8765
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # Bridge WebSocket endpoint
+      - "traefik.http.routers.bridge.rule=Host(`lk.delo.sh`) && PathPrefix(`/bridge`)"
+      - "traefik.http.routers.bridge.entrypoints=websecure"
+      - "traefik.http.routers.bridge.tls=true"
+      - "traefik.http.routers.bridge.tls.certresolver=letsencrypt"
+      - "traefik.http.services.bridge.loadbalancer.server.port=8765"
+    depends_on:
+      - livekit-server
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import websockets; import asyncio; asyncio.get_event_loop().run_until_complete(websockets.connect('ws://localhost:8765/bridge').close())"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
 networks:
   proxy:
     external: true
