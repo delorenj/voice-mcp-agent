@@ -1,0 +1,32 @@
+[package]
+name = "voice-mcp-agent"
+version = "0.1.0"
+description = "Voice MCP Agent with system tray STT daemon"
+authors = ["delorenj"]
+license = "MIT"
+repository = ""
+default-run = "voice-mcp-agent"
+edition = "2021"
+rust-version = "1.60"
+
+[build-dependencies]
+tauri-build = { version = "1.0", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.0", features = ["api-all", "system-tray", "cli"] }
+tokio = { version = "1.0", features = ["full"] }
+
+# For system tray and notifications
+tray-item = "0.1"
+
+# For process management
+sysinfo = "0.29"
+
+# For IPC with Python
+tokio-process = "0.2"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

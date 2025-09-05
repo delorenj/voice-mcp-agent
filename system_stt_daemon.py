@@ -7,7 +7,21 @@ import logging
 import sounddevice as sd
 import numpy as np
 from faster_whisper import WhisperModel
-import pyautogui
+import os
+
+# Check if we can import pyautogui safely
+PYAUTOGUI_AVAILABLE = False
+try:
+    # Try to set DISPLAY to a dummy value to avoid X11 connection errors
+    if 'DISPLAY' not in os.environ:
+        os.environ['DISPLAY'] = ':0'
+    
+    import pyautogui
+    PYAUTOGUI_AVAILABLE = True
+    print("✅ pyautogui available for text typing")
+except (ImportError, Exception) as e:
+    PYAUTOGUI_AVAILABLE = False
+    print(f"⚠️  pyautogui not available ({e}). Text will be printed to console instead of typed")
 import threading
 import queue
 import time
@@ -31,8 +45,9 @@ class SystemSTTDaemon:
         self.recording = False
         self.processing = False
         
-        # Disable pyautogui failsafe
-        pyautogui.FAILSAFE = False
+        # Disable pyautogui failsafe if available
+        if PYAUTOGUI_AVAILABLE:
+            pyautogui.FAILSAFE = False
         
     def audio_callback(self, indata, frames, time, status):
         """Callback for audio input"""
@@ -69,7 +84,10 @@ class SystemSTTDaemon:
         """Type transcribed text into active application"""
         if text and len(text.strip()) > 2:  # Only type meaningful text
             logger.info(f"Typing: {text}")
-            pyautogui.typewrite(text + " ")
+            if PYAUTOGUI_AVAILABLE:
+                pyautogui.typewrite(text + " ")
+            else:
+                print(f"[Transcribed]: {text}")
     
     def process_audio_worker(self):
         """Worker thread for processing audio chunks"""
